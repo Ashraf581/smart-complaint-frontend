@@ -1,0 +1,204 @@
+.form-container {
+    min-height: calc(100vh - 65px);
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 50px 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-card {
+    background: rgba(255, 255, 255, 0.03);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+
+    border-radius: 24px;
+    padding: 48px;
+    width: 100%;
+    max-width: 620px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.form-header {
+    margin-bottom: 36px;
+}
+
+.form-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #a8b2d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+}
+
+.form-subtitle {
+    color: #8892a4;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    color: #a8b2d8;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #4a5568;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #e94560;
+    background: rgba(233, 69, 96, 0.05);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #e94560, #c23152);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Success Card */
+.success-card {
+    margin-top: 28px;
+    background: rgba(46, 213, 115, 0.05);
+    border: 1px solid rgba(46, 213, 115, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    animation: fadeIn 0.4s ease;
+}
+
+.success-card h3 {
+    color: #2ed573;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.result-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.result-label {
+    color: #8892a4;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.result-value {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Error Card */
+.error-card {
+    margin-top: 24px;
+    background: rgba(255, 77, 77, 0.05);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Badges */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    letter-spacing: 0.3px;
+}
+
+.dept-WATER { background: rgba(30,144,255,0.15); color: #4da6ff; border: 1px solid rgba(30,144,255,0.3); }
+.dept-ELECTRICITY { background: rgba(255,215,0,0.15); color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
+.dept-ROADS { background: rgba(255,140,0,0.15); color: #ff9f40; border: 1px solid rgba(255,140,0,0.3); }
+.dept-SANITATION { background: rgba(46,213,115,0.15); color: #2ed573; border: 1px solid rgba(46,213,115,0.3); }
+.dept-PARKS { background: rgba(0,250,154,0.15); color: #00fa9a; border: 1px solid rgba(0,250,154,0.3); }
+.dept-UNASSIGNED { background: rgba(168,178,216,0.15); color: #8892a4; border: 1px solid rgba(168,178,216,0.2); }
+
+.priority-HIGH { background: rgba(255,77,77,0.15); color: #ff6b6b; border: 1px solid rgba(255,77,77,0.3); }
+.priority-MEDIUM { background: rgba(255,165,0,0.15); color: #ffa500; border: 1px solid rgba(255,165,0,0.3); }
+.priority-LOW { background: rgba(46,213,115,0.15); color: #2ed573; border: 1px solid rgba(46,213,115,0.3); }
