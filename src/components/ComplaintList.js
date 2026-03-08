@@ -35,9 +35,10 @@ function ComplaintList() {
 
     // Apply filters when anything changes
     useEffect(() => {
-        applyFilters();
-    }, [complaints, search, deptFilter,
-        priorityFilter, statusFilter]);
+    applyFilters();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [complaints, search, deptFilter,
+    priorityFilter, statusFilter]);
 
     // ============================================
     // Fetch Complaints from Spring Boot
