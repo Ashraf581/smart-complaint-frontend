@@ -21,9 +21,11 @@ function ComplaintList() {
     const [deptFilter, setDeptFilter] = useState('ALL');
     const [priorityFilter, setPriorityFilter] = useState('ALL');
     const [statusFilter, setStatusFilter] = useState('ALL');
+    const [verifyFilter, setVerifyFilter] = useState('ALL'); // NEW
     const [updatingId, setUpdatingId] = useState(null);
     const [reclassifyingId, setReclassifyingId] = useState(null);
     const [deletingId, setDeletingId] = useState(null);
+    const [expandedPhoto, setExpandedPhoto] = useState(null); // NEW
     const { isAdmin } = useAuth();
 
     // ============================================
@@ -35,10 +37,9 @@ function ComplaintList() {
 
     // Apply filters when anything changes
     useEffect(() => {
-    applyFilters();
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [complaints, search, deptFilter,
-    priorityFilter, statusFilter]);
+        applyFilters();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [complaints, search, deptFilter, priorityFilter, statusFilter, verifyFilter]);
 
     // ============================================
     // Fetch Complaints from Spring Boot
@@ -83,6 +84,12 @@ function ComplaintList() {
         if (statusFilter !== 'ALL') {
             result = result.filter(
                 c => c.status === statusFilter);
+        }
+
+        // NEW — verification filter
+        if (verifyFilter !== 'ALL') {
+            result = result.filter(
+                c => c.verificationStatus === verifyFilter);
         }
 
         setFiltered(result);
@@ -168,15 +175,28 @@ function ComplaintList() {
     // Format date nicely
     // ============================================
     const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-};
+        return new Date(dateString).toLocaleString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    // ============================================
+    // NEW — Get verification badge
+    // ============================================
+    const getVerifyBadge = (status) => {
+        if (status === 'VERIFIED')
+            return <span className="badge verify-VERIFIED">✅ Verified</span>;
+        if (status === 'UNVERIFIED')
+            return <span className="badge verify-UNVERIFIED">⚠️ Unverified</span>;
+        if (status === 'SUSPICIOUS')
+            return <span className="badge verify-SUSPICIOUS">🚨 Suspicious</span>;
+        return <span className="badge verify-NO_PHOTO">❌ No Photo</span>;
+    };
 
     // ============================================
     // Stats calculations
@@ -187,8 +207,8 @@ function ComplaintList() {
             c => c.priority === 'HIGH').length,
         pending: complaints.filter(
             c => c.status === 'PENDING').length,
-        resolved: complaints.filter(
-            c => c.status === 'RESOLVED').length,
+        verified: complaints.filter(
+            c => c.verificationStatus === 'VERIFIED').length, // UPDATED
     };
 
     // ============================================
@@ -196,6 +216,44 @@ function ComplaintList() {
     // ============================================
     return (
         <div className="dashboard-container">
+
+            {/* NEW — Fullscreen Photo Modal */}
+            {expandedPhoto && (
+                <div
+                    className="photo-modal-overlay"
+                    onClick={() => setExpandedPhoto(null)}
+                >
+                    <div className="photo-modal">
+                        <img
+                            src={expandedPhoto.photo}
+                            alt="Evidence"
+                            className="photo-modal-img"
+                        />
+                        <div className="photo-modal-info">
+                            <strong>{expandedPhoto.title}</strong>
+                            <span>{expandedPhoto.location}</span>
+                            {expandedPhoto.photoLatitude && (
+                                <span className="gps-coords">
+                                    📍 GPS: {expandedPhoto.photoLatitude.toFixed(5)},
+                                    {expandedPhoto.photoLongitude.toFixed(5)}
+                                    &nbsp;—&nbsp;
+                                    <a
+                                        href={`https://www.google.com/maps?q=${expandedPhoto.photoLatitude},${expandedPhoto.photoLongitude}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        onClick={e => e.stopPropagation()}
+                                    >
+                                        View on Google Maps 🗺️
+                                    </a>
+                                </span>
+                            )}
+                            <span className="close-hint">
+                                Click anywhere to close
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Header */}
             <div className="dashboard-header">
@@ -210,7 +268,7 @@ function ComplaintList() {
                 </div>
             </div>
 
-            {/* Stats Row */}
+            {/* Stats Row — UPDATED */}
             <div className="stats-row">
                 <div className="stat-card">
                     <span className="stat-number">
@@ -238,15 +296,15 @@ function ComplaintList() {
                 </div>
                 <div className="stat-card">
                     <span className="stat-number">
-                        {stats.resolved}
+                        {stats.verified}
                     </span>
                     <span className="stat-label">
-                        Resolved
+                        Verified
                     </span>
                 </div>
             </div>
 
-            {/* Filters Row */}
+            {/* Filters Row — UPDATED with verification filter */}
             <div className="filters-row">
 
                 {/* Search */}
@@ -306,6 +364,18 @@ function ComplaintList() {
                     </option>
                     <option value="RESOLVED">✅ Resolved</option>
                 </select>
+
+                {/* NEW — Verification Filter */}
+                <select
+                    className="filter-select"
+                    value={verifyFilter}
+                    onChange={e => setVerifyFilter(e.target.value)}
+                >
+                    <option value="ALL">All Verifications</option>
+                    <option value="VERIFIED">✅ Verified</option>
+                    <option value="UNVERIFIED">⚠️ Unverified</option>
+                    <option value="NO_PHOTO">❌ No Photo</option>
+                </select>
             </div>
 
             {/* Results count */}
@@ -328,7 +398,7 @@ function ComplaintList() {
                 <div className="error-msg">❌ {error}</div>
             )}
 
-            {/* Table */}
+            {/* Table — UPDATED with Photo column */}
             {!loading && !error && (
                 <div className="table-container">
                     {filtered.length === 0 ? (
@@ -340,12 +410,13 @@ function ComplaintList() {
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Photo</th> {/* NEW */}
                                     <th>Title</th>
                                     <th>Location</th>
                                     <th>Department</th>
                                     <th>Priority</th>
                                     <th>Status</th>
-                                    <th>Confidence</th>
+                                    <th>Verification</th> {/* NEW */}
                                     <th>Date</th>
                                     <th>Actions</th>
                                 </tr>
@@ -357,6 +428,24 @@ function ComplaintList() {
                                         {/* ID */}
                                         <td className="id-cell">
                                             #{complaint.id}
+                                        </td>
+
+                                        {/* NEW — Photo Thumbnail */}
+                                        <td>
+                                            {complaint.photo ? (
+                                                <img
+                                                    src={complaint.photo}
+                                                    alt="evidence"
+                                                    className="complaint-thumb"
+                                                    onClick={() =>
+                                                        setExpandedPhoto(complaint)}
+                                                    title="Click to view full photo"
+                                                />
+                                            ) : (
+                                                <span className="no-photo-badge">
+                                                    No photo
+                                                </span>
+                                            )}
                                         </td>
 
                                         {/* Title */}
@@ -418,10 +507,9 @@ function ComplaintList() {
                                             </button>
                                         </td>
 
-                                        {/* Confidence */}
+                                        {/* NEW — Verification Badge */}
                                         <td>
-                                            {complaint.confidence
-                                                || 'N/A'}
+                                            {getVerifyBadge(complaint.verificationStatus)}
                                         </td>
 
                                         {/* Date */}
@@ -434,8 +522,7 @@ function ComplaintList() {
                                         <td>
                                             <div className="action-buttons">
 
-                                                {/* Re-classify
-                                                    UNASSIGNED only */}
+                                                {/* Re-classify — UNASSIGNED only */}
                                                 {(complaint.department
                                                     === 'UNASSIGNED'
                                                     || !complaint.priority
@@ -458,8 +545,7 @@ function ComplaintList() {
                                                     </button>
                                                 )}
 
-                                                {/* Delete button
-                                                    Admin + Resolved only */}
+                                                {/* Delete button — Admin + Resolved only */}
                                                 {isAdmin() &&
                                                 complaint.status
                                                     === 'RESOLVED' && (
