@@ -49,7 +49,8 @@ function ComplaintForm() {
 
                 if (marker === 0xFFE1) {
                     // APP1 marker — EXIF lives here
-                    const _segmentLength = view.getUint16(offset, false);
+                    // Skip the segment length (we don't need to store it)
+                    view.getUint16(offset, false);
                     offset += 2;
 
                     const exifHeader = String.fromCharCode(
